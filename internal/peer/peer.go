@@ -1,6 +1,6 @@
 package peer
 
-var peers = make([]Peer, 0, 10)
+var peers = make([]Peer, 0)
 
 type Peer struct {
 	PeerId    string

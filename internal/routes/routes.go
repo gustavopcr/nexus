@@ -3,7 +3,8 @@ package routes
 import (
 	"fmt"
 	"net/http"
-
+	"net"
+	"strconv"
 	"github.com/gustavopcr/nexus/internal/peer"
 )
 
@@ -14,8 +15,20 @@ func handleOnConnectPeer(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		fmt.Println("peers", peer.GetAllPeers())
 		fmt.Fprintf(w, "alo peer")
-	} else if r.Method == "POST" {
-		fmt.Fprintf(w, "alo peer")
+	} else if r.Method == "POST" {		
+		ip, portStr, err := net.SplitHostPort(r.RemoteAddr)
+		if err != nil{
+			fmt.Println("err: ", err)
+			http.Error(w, "Invalid Ip", http.StatusForbidden)
+			return
+		}
+		port, err := strconv.ParseUint(portStr, 10, 16)
+		if err != nil{
+			fmt.Println("err: ", err)
+			http.Error(w, "Invalid Port", http.StatusForbidden)
+			return
+		}
+		peer.NewPeer( peer.Peer{ PeerId: "alo123", IPAddress: ip, Port: uint16(port)})
 	} else {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}
