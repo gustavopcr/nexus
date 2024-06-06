@@ -6,6 +6,7 @@ import (
 	"net"
 	"strconv"
 	"github.com/gustavopcr/nexus/internal/peer"
+	"encoding/json"
 )
 
 func handleGET(w http.ResponseWriter, r *http.Request) {
@@ -13,7 +14,8 @@ func handleGET(w http.ResponseWriter, r *http.Request) {
 }
 func handleOnConnectPeer(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		fmt.Fprintf(w, "alo peer")
+		json.NewEncoder(w).Encode(peer.GetAllPeers())
+		return
 	} else if r.Method == "POST" {		
 		ip, portStr, err := net.SplitHostPort(r.RemoteAddr)
 		if err != nil{
@@ -35,7 +37,7 @@ func handleOnConnectPeer(w http.ResponseWriter, r *http.Request) {
 
 func NewRouter() *http.ServeMux {
 	router := http.NewServeMux()
-	router.HandleFunc("/", handleGET)
+
 	router.HandleFunc("/peers", handleOnConnectPeer)
 
 	return router
