@@ -13,7 +13,6 @@ func handleGET(w http.ResponseWriter, r *http.Request) {
 }
 func handleOnConnectPeer(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
-		fmt.Println("peers", peer.GetAllPeers())
 		fmt.Fprintf(w, "alo peer")
 	} else if r.Method == "POST" {		
 		ip, portStr, err := net.SplitHostPort(r.RemoteAddr)
