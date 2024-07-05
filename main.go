@@ -33,28 +33,31 @@ func main() {
 			return
 		}
 
-		p := peer.Peer {
-			PeerId: "123",
-			IPAddress: "1.1.1.1",
-			Port: 6550,
-		}
-		/*
-			PeerId    string `json:"peerId"`
-			IPAddress string `json:"ipAddress"`
-			Port      uint16 `json:"port"`
+		peer.NewPeer(peer.Peer{ Address: remoteAddr})
 		
-		*/
-		peer.NewPeer(p)
 		fmt.Printf("Received message from %s: %s\n", remoteAddr, string(buffer[:n]))
-
-		// Send a response back to the client
-		response := []byte("Message received!")
-		_, err = conn.WriteToUDP(response, remoteAddr)
-		if err != nil {
-			fmt.Println("Error sending response:", err)
-			return
-		}
 		fmt.Println("peers count: ", len(peer.GetAllPeers()))
-		fmt.Printf("Sent response to %s: %s\n", remoteAddr, string(response))
+		fmt.Println("peers count: ", peer.GetAllPeers())
+
+		//fmt.Printf("Sent response to %s: %s\n", remoteAddr, string(response))
+
+		if(len(peer.GetAllPeers()) >= 2){
+			peers := peer.GetAllPeers()
+			// Send each client the other's address information
+			for i := 0; i < len(peers); i++ {
+				for j := 0; j < len(peers); j++ {
+					if i != j {
+						message := fmt.Sprintf("Peer: %s", peers[j].Address.String())
+						_, err = conn.WriteToUDP([]byte(message), peers[i].Address)
+						if err != nil {
+							fmt.Println("Error sending peer info:", err)
+						}
+					}
+				}
+			}
+
+			peer.ClearPeers()
+		}
+
 	}
 }

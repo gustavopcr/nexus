@@ -1,11 +1,11 @@
 package peer
 
+import("net")
+
 var peers = make([]Peer, 0)
 
 type Peer struct {
-	PeerId    string `json:"peerId"`
-	IPAddress string `json:"ipAddress"`
-	Port      uint16 `json:"port"`
+	Address *net.UDPAddr
 }
 
 func NewPeer(p Peer) {
@@ -14,4 +14,8 @@ func NewPeer(p Peer) {
 
 func GetAllPeers() []Peer {
 	return peers
+}
+
+func ClearPeers(){
+	peers = peers[:0]
 }
