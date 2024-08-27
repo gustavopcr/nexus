@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net"
+
 	"github.com/gustavopcr/nexus/type/peer"
 )
 
@@ -33,21 +34,21 @@ func main() {
 			return
 		}
 
-		peer.NewPeer(peer.Peer{ Address: remoteAddr})
-		
+		peer.NewPeer(peer.Peer{Address: remoteAddr})
+
 		fmt.Printf("Received message from %s: %s\n", remoteAddr, string(buffer[:n]))
 		fmt.Println("peers count: ", len(peer.GetAllPeers()))
 		fmt.Println("peers count: ", peer.GetAllPeers())
 
 		//fmt.Printf("Sent response to %s: %s\n", remoteAddr, string(response))
 
-		if(len(peer.GetAllPeers()) >= 2){
+		if len(peer.GetAllPeers()) >= 2 {
 			peers := peer.GetAllPeers()
 			// Send each client the other's address information
 			for i := 0; i < len(peers); i++ {
 				for j := 0; j < len(peers); j++ {
 					if i != j {
-						message := fmt.Sprintf("Peer: %s", peers[j].Address.String())
+						message := fmt.Sprintf(peers[j].Address.String())
 						_, err = conn.WriteToUDP([]byte(message), peers[i].Address)
 						if err != nil {
 							fmt.Println("Error sending peer info:", err)
